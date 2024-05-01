@@ -7,12 +7,15 @@ import com.driver.model.Station;
 import com.driver.model.Ticket;
 import com.driver.model.Train;
 import com.driver.repository.TrainRepository;
+import org.aspectj.weaver.ast.HasAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TrainService {
@@ -59,9 +62,25 @@ public class TrainService {
         //Inshort : a train has totalNo of seats and there are tickets from and to different locations
         //We need to find out the available seats between the given 2 stations.
 
-        
+        Train train=trainRepository.findById(seatAvailabilityEntryDto.getTrainId()).get();
 
-       return 0;
+        int totSeats=train.getNoOfSeats();
+        List<Ticket>trainList=train.getBookedTickets();
+
+        Map<String,Integer> mp=new HashMap<>();
+        String[] arr=train.getRoute().split(",");
+        for(int i=0;i<arr.length;i++){
+            mp.put(arr[i],i);
+        }
+
+        String st=seatAvailabilityEntryDto.getFromStation()+"";
+        String en=seatAvailabilityEntryDto.getToStation()+"";
+        int booking=0;
+
+//        for(Ticket ticket:trainList){
+//            if(mp.get(ticket.))
+//        }
+        return 0;
     }
 
     public Integer calculatePeopleBoardingAtAStation(Integer trainId,Station station) throws Exception{
@@ -71,8 +90,29 @@ public class TrainService {
         //throw new Exception("Train is not passing from this station");
         //  in a happy case we need to find out the number of such people.
 
+        Train train=trainRepository.findById(trainId).get();
+        String[] arr= train.getRoute().split(",");
+        String stsn=station+"";
 
-        return 0;
+        boolean flg=false;
+        for(String str:arr){
+            if(str.equals(stsn)){
+                flg=true;
+            }
+        }
+
+        if (flg == false) {
+            throw new Exception("Train is not passing from this station");
+        }
+
+        List<Ticket>ticketList=train.getBookedTickets();
+        int tot=0;
+
+        for(Ticket ticket:ticketList){
+           tot+=ticket.getPassengersList().size();
+        }
+
+        return tot;
     }
 
     public Integer calculateOldestPersonTravelling(Integer trainId){
