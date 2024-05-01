@@ -26,7 +26,26 @@ public class TrainService {
         //and route String logic to be taken from the Problem statement.
         //Save the train and return the trainId that is generated from the database.
         //Avoid using the lombok library
-        return null;
+
+        List<Station>stationList=trainEntryDto.getStationRoute();
+
+        String rout="";
+        for(int i=0;i<stationList.size();i++){
+            if(i==stationList.size()-1){
+                rout=rout+stationList.get(i);
+            }else{
+                rout=rout+",";
+            }
+        }
+
+        Train train=new Train();
+        train.setRoute(rout);
+        train.setDepartureTime(trainEntryDto.getDepartureTime());
+        train.setNoOfSeats(trainEntryDto.getNoOfSeats());
+
+        train=trainRepository.save(train);
+
+        return train.getTrainId();
     }
 
     public Integer calculateAvailableSeats(SeatAvailabilityEntryDto seatAvailabilityEntryDto){
@@ -40,7 +59,9 @@ public class TrainService {
         //Inshort : a train has totalNo of seats and there are tickets from and to different locations
         //We need to find out the available seats between the given 2 stations.
 
-       return null;
+        
+
+       return 0;
     }
 
     public Integer calculatePeopleBoardingAtAStation(Integer trainId,Station station) throws Exception{
@@ -71,7 +92,7 @@ public class TrainService {
         //in problem statement)
         //You can also assume the seconds and milli seconds value will be 0 in a LocalTime format.
 
-        return null;
+        return new ArrayList<>();
     }
 
 }
