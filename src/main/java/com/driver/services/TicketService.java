@@ -46,7 +46,13 @@ public class TicketService {
         List<Integer>listPassenger=bookTicketEntryDto.getPassengerIds();
 
        List<Ticket>bookedlist=train.getBookedTickets();
-       int tot= train.getNoOfSeats()-bookedlist.size();
+       int cnt=0;
+
+       for(Ticket ticket:bookedlist){
+           cnt+=ticket.getPassengersList().size();
+       }
+
+       int tot= train.getNoOfSeats()-cnt;
 
        if(tot<bookTicketEntryDto.getNoOfSeats()){
            throw new Exception("Less tickets are available");
@@ -60,9 +66,11 @@ public class TicketService {
        String[] arr=train.getRoute().split(",");
 
        for(String str:arr){
-           if(str.equals(bookTicketEntryDto.getFromStation())){
+           String strt=bookTicketEntryDto.getFromStation()+"";
+           String endst=bookTicketEntryDto.getToStation()+"";
+           if(str.equals(strt)){
                st=true;
-           }else if(str.equals(bookTicketEntryDto.getToStation())){
+           }else if(str.equals(endst)){
                dst=true;
            }
 
@@ -81,7 +89,7 @@ public class TicketService {
            if(arr[i].equals(bookTicketEntryDto.getFromStation())){
                for(int j=i+1;j<arr.length;j++){
                    if(arr[j].equals(bookTicketEntryDto.getToStation())){
-                       totFare=(j-i)*bookTicketEntryDto.getNoOfSeats();
+                       totFare=(j-i)*bookTicketEntryDto.getNoOfSeats()*300;
                        break;
                    }
                }
@@ -110,6 +118,7 @@ public class TicketService {
 
       List<Ticket>ticketList1=train.getBookedTickets();
       ticketList1.add(ticket);
+      train.setNoOfSeats(train.getNoOfSeats()-bookTicketEntryDto.getNoOfSeats());
 
       ticket=ticketRepository.save(ticket);
       trainRepository.save(train);

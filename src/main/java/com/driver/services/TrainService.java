@@ -147,7 +147,14 @@ public class TrainService {
         //in problem statement)
         //You can also assume the seconds and milli seconds value will be 0 in a LocalTime format.
 
-        return new ArrayList<>();
+         List<Train>trainList=trainRepository.findAll();
+         List<Integer>ans=new ArrayList<>();
+         for(Train train:trainList){
+             String[] arr=train.getRoute().split(",");
+
+         }
+
+        return ans;
     }
 
 }
